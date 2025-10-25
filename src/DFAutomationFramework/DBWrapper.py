@@ -24,6 +24,8 @@ class DBWrapper:
         with open(cls.module_register_path) as module_register_path:
             module_register = yaml.safe_load(module_register_path)
         dbwrapper_module_entry = module_register["dbwrapper"] 
+        if not dbwrapper_module_entry["module"]: # TODO implement a propper handling - should be fixed when a default db is implemented
+            return None 
         dbwrapper_module = importlib.import_module(dbwrapper_module_entry["module"])
         dbwrapper_cls = getattr(dbwrapper_module, dbwrapper_module_entry["class"])
         db_connection = dbwrapper_cls()
