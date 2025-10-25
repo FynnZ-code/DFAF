@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='basic_utils.js')}}"></script>
+    <script type="text/javascript" >
+        
+    </script>
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <h1>Aufgaben</h1>
+
+    <div class="container">
+        <div class="card element-center">
+            <div class="table-toolbar">
+                <div class="table-toolbar-buttons">
+                    <button class="float-right tooltip" type="button" onclick="location.href='/tasks/create'"> Aufgabe Erstellen
+                    </button>
+                </div>
+                <input class="float-right" type="text" id="taskSearch" onkeyup="SearchTable(this.id, 'taskTable')" placeholder="Suche nach Aufgaben">
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>UID</th>
+                            <th>Aufgabe</th>
+                            {% for value in task_id_scheme %}
+                                <th>{{ value.description }}</th>
+                            {% endfor %}
+                            <th>Status</th>
+                            <th>Multithread</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskTable">
+                        {% for task in tasks %}
+                            <tr>
+                                <td><a href="/tasks/{{ task.uid }}">{{ task.uid }}</a></td>
+                                <td>{{ task.task }}</td>
+                                {% for value in task_id_scheme %}
+                                    <td>{{ task[value.key] }}</td>
+                                {% endfor %}
+                                <td>{{ task.status }}</td>
+                                <td>{{ task.multithread }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='basic_utils.js')}}"></script>
+    <script>
+        function updateData() {
+            fetch("/update")
+                .then(response => response.json())
+                .then(data => {
+                    let workersTable = document.getElementById("workers");
+                    workersTable.innerHTML = "";
+                    data.workers.forEach(w => {
+                        workersTable.innerHTML += `<tr>
+                            <td><a href="/workers/${w.host}/${w.port}">${w.host}</a></td><td>${w.status}</td><td><a href="/tasks/${w.current_task}">${w.current_task}</a></td><td>${w.managable_tasks}</td>
+                        </tr>`;
+                    });
+
+                    let opentasksTable = document.getElementById("tasks_open");
+                    opentasksTable.innerHTML = "";
+                    data.tasks.forEach(t => {
+                        if(t.status == "open"){
+                            var table_row_html = `<tr>
+                                <td><a href="/tasks/${t.uid}">${t.uid}</a></td><td>${t.status}</td>`;
+                            data.task_id_scheme.forEach(variable => {
+                                table_row_html += `<td>${t[variable.key]}</td>`;
+                            });
+                            table_row_html += `<td>${t.task}</td>
+                            </tr>`;
+                            opentasksTable.innerHTML += table_row_html;
+                        }
+                        console.log()
+                    });
+
+                    let runningtasksTable = document.getElementById("tasks_running");
+                    runningtasksTable.innerHTML = "";
+                    data.tasks.forEach(t => {
+                        if(t.status == "running"){
+                            var table_row_html = `<tr>
+                                <td><a href="/tasks/${t.uid}">${t.uid}</a></td><td>${t.status}</td>`;
+                            data.task_id_scheme.forEach(variable => {
+                                table_row_html += `<td>${t[variable.key]}</td>`;
+                            });
+                            table_row_html += `<td>${t.task}</td>
+                            </tr>`;
+                            runningtasksTable.innerHTML += table_row_html;
+                        }
+                    });
+
+                    let finishedtasksTable = document.getElementById("tasks_finished");
+                    finishedtasksTable.innerHTML = "";
+                    data.tasks.forEach(t => {
+                        if(t.status == "finished" || t.status == "failed"){
+                            var table_row_html = `<tr>
+                                <td><a href="/tasks/${t.uid}">${t.uid}</a></td><td>${t.status}</td>`;
+                            data.task_id_scheme.forEach(variable => {
+                                table_row_html += `<td>${t[variable.key]}</td>`;
+                            });
+                            table_row_html += `<td>${t.task}</td>
+                            </tr>`;
+                            finishedtasksTable.innerHTML += table_row_html;
+                        }
+                    });
+
+                    let logtable= document.getElementById("logTable");
+                    logtable.innerHTML = "";
+                    data.logs.forEach(log => {
+                        href_link = log.worker.indexOf(':') > -1 ? `/workers/${log.worker.split(':')[0]}/${log.worker.split(':')[1]}` : "/workers";
+                        logtable.innerHTML += `<tr>
+                                <td><a href="${href_link}">${log.worker}</a></td><td class="${log.status == "failed" ? "failed" : ""}"> ${log.status}</td><td>${log.timestamp}</td><td>${log.text}</td>
+                            </tr>`;
+                    });
+                SearchTable("logSearch", "logTable")
+                });
+        }
+        setInterval(updateData, 1000);
+    </script>
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <div class="container element-center">
+        <div class="grid">
+            <div>
+                <h1>Aufgaben</h1>
+                
+                <div class="card"> 
+                    <h2 class="card-title">Offen</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    {% for value in task_id_scheme %}
+                                        <th>{{ value.description }}</th>
+                                    {% endfor %}
+                                    <th>Art</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tasks_open"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2 class="card-title">In Bearbeitung</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    {% for value in task_id_scheme %}
+                                        <th>{{ value.description }}</th>
+                                    {% endfor %}
+                                    <th>Art</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tasks_running"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2 class="card-title">Abgeschlossen</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    {% for value in task_id_scheme %}
+                                        <th>{{ value.description }}</th>
+                                    {% endfor %}
+                                    <th>Art</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tasks_finished"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h1>DF Automation</h1>
+                    <div class="logo-container">
+                        <div class="logo left">
+                        </div>
+
+                        <div class="logo mid">
+                        </div>
+
+                        <div class="logo right">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">Aktive Worker</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>Host</th><th>Status</th><th>Aktuelle Aufgabe</th><th>Kann bearbeiten</th></tr>
+                            </thead>
+                            <tbody id="workers"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h1>Log</h1>
+                <div class="card">
+                    <div class="table-toolbar">
+                        <input class="float-right" type="text" id="logSearch" onkeyup="SearchTable(this.id, 'logTable')" placeholder="Durchsuche Log">
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>Worker</th><th>Status</th><th>Zeitstempel</th><th>Eintrag</th></tr>
+                            </thead>
+                            <tbody id="logTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

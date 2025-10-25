@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabe erstellen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}">
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById("task").addEventListener("change", toggle_inputs);
+        })
+        
+    </script>
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <div class="card element-center form">
+        <h1 class="card-title">Neue Aufgabe erstellen</h1>
+        <form method="post" >
+            <hr>
+            <label for="task">Prozess:</label>
+            <select id="task" name="task" onchange="toggle_inputs" required>
+                {% for process in processes %}
+                <option value="{{ process.name }}">{{ process.name }}</option>
+                {% endfor %}
+                <option value="" selected disabled hidden></option>
+            </select>
+            {% for value in task_id_scheme %}
+                <label for="{{ value.key }}">{{ value.description }}:</label>
+                <input type="text" id="{{ value.key }}" name="{{ value.key }}" {% if value.required %}required{% endif %}>    
+            {% endfor %}
+            <hr>
+            <button class="float-right" type="submit">Warteschlange hinzufügen</button>
+        </form>
+    </div>
+</body>
+</html>

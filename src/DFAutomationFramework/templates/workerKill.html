@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabe erstellen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}">
+    <script>
+        function hideTimestampSelect() {
+            const checkbox = document.getElementById('enableKill');
+            const timestampContainer = document.getElementById('timestampContainer');
+            timestampContainer.style.display = checkbox.checked ? "None" : "block";
+
+            const timestamp = document.getElementById('timestamp');
+            if (checkbox.checked) {
+                timestamp.removeAttribute("required");
+            } else {
+                timestamp.setAttribute("required", "");
+            }
+            
+        }
+
+        function fetchWorkers() {
+            fetch("/update")
+                .then(response => response.json())
+                .then(data => {
+                    let workers_select = document.getElementById("worker_select");
+                    workers_select.innerHTML = "";
+                    data.workers.forEach(w => {
+                        workers_select.innerHTML += `
+                        <option value="${w.host},${w.managable_tasks}">${w.host} | ${w.managable_tasks}</option>`;
+                    });
+                });
+        }
+
+        window.onload = function() {
+            fetchWorkers();
+        };
+    </script>
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <div class="card element-center form">
+        <h1 class="card-title">Worker Beenden</h1>
+        <form method="post">
+            <p class="text-center">
+                Worker: {{ worker.host }}:{{ worker.port }} | {{ worker.managable_tasks[0] }}
+            </p>
+            <hr>
+            <label>
+                <input type="checkbox" id="enableKill" name="enableKill" onchange="hideTimestampSelect()"> Worker Töten
+            </label>
+            <div id="timestampContainer" style="display: block;">
+                <label for="timestamp">Timeout:</label>
+                <input type="datetime-local" id="timestamp" name="timestamp" style="width: 100%;" required>
+            </div>
+            <hr>
+            <button class="float-right" type="submit">Worker Herunterfahren</button>
+        </form>
+    </div>
+</body>
+</html>

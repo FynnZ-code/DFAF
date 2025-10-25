@@ -1,0 +1,31 @@
+# processes.yaml
+processes:
+  - name: Dummy
+    module: DFAutomationFramework.Processes
+    class: DummyWrapper
+    rules: 
+      - type: unambiguous
+        act: remove
+        params: 
+          - key: case
+          - key: request
+          - key: evidences
+      - type: unambiguous
+        act: skip
+        params: 
+          - key: case
+    
+dbwrapper:
+  name: DB Wrapper
+  module: 
+  class: 
+  TaskID: # Defines how a Task is identified 
+    - type: evidence
+      default: True
+      values: 
+        - key: evidence
+          description: Asservaten Nummer
+          type: str
+          required: True
+        
+

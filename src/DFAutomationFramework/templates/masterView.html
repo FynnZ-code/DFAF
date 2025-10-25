@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='basic_utils.js')}}"></script>
+    <script>
+    </script>
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <h1>Master</h1>
+
+    <div class="container">
+        <h2>Konfiguration</h2>
+        <div class="grid">
+            <div class="card">
+                <h2 class="card-title">Master Host</h2>
+                <div class="metric-value"> {{ config.MasterHost }} </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">UI Port</h2>
+                <div class="metric-value"> {{ config.UIPort }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Cluster Port</h2>
+                <div class="metric-value"> {{ config.ClusterPort }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Gestartet am</h2>
+                <div class="metric-value"> {{ config.StartedAt }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Worker Report Tick Rate</h2>
+                <div class="metric-value"> {{ config.ReportTickRate }} (s)</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Task Queue Tick Rate</h2>
+                <div class="metric-value"> {{ config.TaskQueueTickRate }} (s)</div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="container">
+        <h2>Metriken</h2>
+        <div class="grid">
+            <div class="card">
+                <h2 class="card-title">Aktive Worker</h2>
+                <div class="metric-value"> {{ metrics.ActiveWorkers }} </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Aufgaben Insgesamt</h2>
+                <div class="metric-value"> {{ metrics.Tasks }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Offene</h2>
+                <div class="metric-value"> {{ metrics.OpenTasks }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">In Bearbeitung</h2>
+                <div class="metric-value"> {{  metrics.RunningTasks}}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Abgeschlossene</h2>
+                <div class="metric-value"> {{  metrics.FinishedTasks }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Fehlgeschlagene</h2>
+                <div class="metric-value"> {{  metrics.FailedTasks }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Log Einträge</h2>
+                <div class="metric-value"> {{ metrics.Logs }}</div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="container">
+        <div class="grid element-center">
+            <div class="card">
+            <h2 class="card-title"> Logs </h2>
+            <div class="table-toolbar">
+                <input class="float-right" type="text" id="logSearch" onkeyup="SearchTable(this.id, 'logTable')" placeholder="Durchsuche Log">
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>Worker</th><th>Status</th><th>Zeitstempel</th><th>Eintrag</th></tr>
+                    </thead>
+                    <tbody id="logTable">
+                        {% for log in logs %}
+                            <tr class="
+                            {% if log.type == 'INFO' %}
+                                info
+                            {% elif log.type == 'WARNING' %}    
+                                warning
+                            {% elif log.type == 'ERROR' %}   
+                                error
+                            {% endif %}
+                        ">
+                                <td>{{ log.worker }}</td><td>{{ log.status }}</td><td>{{ log.timestamp }}</td><td>{{ log.text }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

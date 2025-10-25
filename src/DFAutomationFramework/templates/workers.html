@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='basic_utils.js')}}"></script>
+    <script type="text/javascript">
+    </script>
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <h1>Worker</h1>
+
+    <div class="container">
+        <div class="card element-center">
+            <div class="table-toolbar">
+                <input class="float-right" type="text" id="workerSearch" onkeyup="SearchTable(this.id, 'workerTable')" placeholder="Suche nach Workern">
+            </div>
+            
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>Host</th><th>Port</th><th>Aufgaben</th><th>Status</th><th>Momentane Aufgabe</th><th>IP</th><th>Timeout</th></tr>
+                    </thead>
+                    <tbody  id="workerTable">
+                        {% for worker in workers %}
+                            <tr>
+                                <td><a href="/workers/{{ worker.host }}/{{ worker.port}}">{{ worker.host }}</a></td><td>{{ worker.port }}</td><td>{{ worker.managable_tasks[0] }}</td><td>{{ worker.status }}</td><td><a href="/tasks/{{ worker.current_task }}">{{ worker.current_task }}</a></td><td>{{ worker.ip }}</td><td>{{ worker.timeout }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

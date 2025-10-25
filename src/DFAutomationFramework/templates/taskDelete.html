@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabe erstellen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}">
+    <script>
+        
+
+        function fetchWorkers() {
+            fetch("/update")
+                .then(response => response.json())
+                .then(data => {
+                    let task_select = document.getElementById("task_select");
+                    task_select.innerHTML = "";
+                    data.tasks.forEach(t => {
+                        task_select.innerHTML += `
+                        <option value="${t.uid}">${t.case} | ${t.evidences} | ${t.task}</option>`;
+                    });
+                });
+        }
+
+        window.onload = function() {
+            fetchWorkers();
+        };
+    </script>
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <div class="form_container">
+        <h1>Aufgabe Löschen</h1>
+        <label for="task_select">Aufgabe:</label>
+        <form method="post">
+            <select id="task_select" name="task_select" required>
+            </select>
+            <button type="submit">Aufgabe Löschen</button>
+        </form>
+    </div>
+</body>
+</html>

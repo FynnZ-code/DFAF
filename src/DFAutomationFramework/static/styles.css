@@ -1,0 +1,384 @@
+/*
+ * sytle.css
+ * Author: Fynn Zöllner 
+ * Version: 1.0
+ *
+
+ -bc0: #222222;
+    --bc1: #3a2325;
+    --bc1hover: #86676c;
+    --bc2: #ca1f44e3;
+    --bc3: #ca1f44;
+    background-image: linear-gradient(to bottom right, #ca1f44, #ca1f4498);
+ */
+
+:root {
+    --bc0: #222222;
+    --bc1: #2e1e20;
+    --bc1hover: #86676c;
+    --bc2: #ca1f44e3;
+    --bc3: #ca1f44;
+
+    --accent: #391783;
+    --accenthover: #403658;
+
+    --text: #bbb;
+}
+
+/* ----------------------------------------
+    1. Base Styles (Reset, Typografie, Grundfarben)
+---------------------------------------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family:'Times New Roman', Times, serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    background-color: var(--bc0);
+}
+
+a {
+    text-decoration: none;
+    color: var(--text);
+    
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+
+/* ----------------------------------------
+    2. Layout (Container, Grid, Sections)
+---------------------------------------- */
+
+.container {
+    max-width: 2800px;
+    padding: 1rem;
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* ----------------------------------------
+    3. Components (Buttons, Cards, Navigation)
+---------------------------------------- */
+
+/* Header */
+
+h1, h2 {
+    text-align: center;
+}
+
+/* Lines */
+
+hr {
+    margin-top: 2rem;
+    border-color: #bbbbbb9c
+}
+
+/* Card */
+.card {
+    background-color: var(--bc1);
+    border: 1px solid var(--text);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 1.5rem;
+    box-shadow: 0px 0px 10px var(--bc1hover);
+}
+
+.card:hover {
+    box-shadow: 0px 0px 20px var(--bc1hover)
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+
+
+/* Navigation */ 
+
+nav {
+    background-color: var(--bc1);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+nav a {
+    color: var(--text);
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 23px;
+}
+
+nav a img {
+    padding: 0;
+}
+
+
+/* Buttons */
+button {
+    max-width: 250px;
+    max-height: 45px;
+    padding: 10px;
+    background-color: var(--accent);
+    color: #bbbbbb;
+    border: 1px solid  var(--accenthover);
+    cursor: pointer;
+    border-radius: 3px;
+
+}
+
+button:hover {
+    background-color: var(--accenthover);
+}
+
+
+
+/* Tables */ 
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table, th, td {
+    border: 1px solid  var(--text);
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--bc3);
+    color: #bbb;
+}
+
+/* Toolbar */
+.table-toolbar {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width:100%;
+    padding: 0px 20px 0px 40px;
+    overflow: hidden;
+}
+
+.table-toolbar-buttons {
+    margin-left: 1.5rem;
+}
+
+
+
+/* Tooltips */
+.tooltip {
+    position:relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: var(--text);
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+
+/* Lists */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    border-style: solid;
+    border-color: #aaa;
+    border-width: 1px;
+    color: #bbb;
+}
+
+ul li {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+ul li:hover {
+    transform: translateY(-2px);
+}
+
+
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin: 10px 0 5px;
+    color: var(--text);
+}
+
+input, select {
+    padding: 10px;
+    border: 1px solid var(--text);
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+form button {
+    margin-top: 2rem;
+}
+
+input:invalid, select:invalid {
+    box-shadow: 0 0 5px 1px red;
+}
+
+input:hover:invalid, select:hover:invalid {
+    box-shadow: none;
+}
+
+.form {
+    width: 1000px;
+}
+
+
+/* Logo */
+.logo-container {
+    display: flex;
+}
+
+.logo {
+    width: 100px;
+    height: 250px;
+    background-image: linear-gradient(to bottom right, #ca1f44, #ca1f4498);
+    box-shadow: 0px 0px 20px rgba(201, 31, 68, 0.5);
+    border-radius: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.logo:hover {
+    box-shadow: 0px 0px 30px rgba(201, 31, 68, 0.699);
+}
+
+.left {
+    margin-left: auto;
+    margin-top: 100px;
+    animation: fade-in 1s ease-in, bounce 5s 1s ease-in infinite;
+}
+
+.mid {
+    animation: fade-in 1s 0.1s ease-in,  bounce 5.12s 1.5s ease-in infinite;
+}
+
+.right {
+    margin-right: auto;
+    margin-top: 70px;
+    animation: fade-in 1s 0.2s ease-in, bounce 4.76s 2s ease-in infinite;
+}
+
+@keyframes fade-in {
+    0% {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+    
+}
+
+@keyframes bounce {
+    0%, 100%{
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(11px);
+    }
+}
+
+
+
+
+/* ----------------------------------------
+    4. Utilities (Text alignment, Margin, Padding)
+---------------------------------------- */
+
+.element-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.float-right {
+    float: right;
+}
+
+.bc-hover:hover{
+    background-color: var(--bc1hover);
+}
+
+
+.info {
+    border-color: var(--text);
+}
+
+.warning {
+    border-color: yellow;
+}    
+
+.error {
+    border-color: red;
+}    
+
+.running {
+    color: var(--text);
+}
+
+.failed {
+    color: red;
+}
+
+.finished {
+    color: green;
+}

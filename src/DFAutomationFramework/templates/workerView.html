@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}">
+    <script>
+    </script>
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <h1>Worker</h1>
+
+    <div class="container">
+        <div class="table-toolbar">
+            <button class="float-right" onclick="location.href='/workers/{{ worker.host }}/{{ worker.port }}/timeout'" type="button"> Timeout einstellen </button>
+        </div>
+        <div class="grid">
+            <div class="card">
+                <h2 class="card-title">host</h2>
+                <div class="metric-value"> {{ worker.host }} </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Port</h2>
+                <div class="metric-value"> {{ worker.port }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Aufgaben</h2>
+                <div class="metric-value"> {{ worker.managable_tasks[0] }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Status</h2>
+                <div class="metric-value"> {{ worker.status }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">IP</h2>
+                <div class="metric-value"> {{ worker.ip }}</div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Momentane Aufgabe</h2>
+                <div class="metric-value"><a href="/tasks/{{ worker.current_task }}">{{ worker.current_task }}</a></div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Timeout</h2>
+                <div class="metric-value"> {{ worker.timeout }}</div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="container">
+        <div class="grid element-center">
+            <div class="card">
+            <h2 class="card-title"> Logs </h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>Worker</th><th>Status</th><th>Zeitstempel</th><th>Eintrag</th></tr>
+                    </thead>
+                    <tbody id="log_table">
+                        {% for log in logs %}
+                            <tr class="
+                            {% if log.type == 'INFO' %}
+                                info
+                            {% elif log.type == 'WARNING' %}    
+                                warning
+                            {% elif log.type == 'ERROR' %}   
+                                error
+                            {% endif %}
+                        ">
+                                <td>{{ log.worker }}</td><td>{{ log.status }}</td><td>{{ log.timestamp }}</td><td>{{ log.text }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <h2 class="card-title"> <a href="/tasks/{{ task.uid }}"> Aufgabe </a></h2>
+                <ul>
+                    <li>
+                        <span>uid: </span>
+                        <span>{{ task.uid }}</span>
+                    </li>
+                    <li>
+                        <span>Aufgabe: </span>
+                        <span>{{ task.task }}</span>
+                    </li>
+                    <li>
+                        <span>Fall: </span>
+                        <span>{{ task.case }}</span>
+                    </li>
+                    <li>
+                        <span>U-Antrag: </span>
+                        <span>{{ task.request }}</span>
+                    </li>
+                    <li>
+                        <span>Asservate: </span>
+                        <span>{{ task.evidences }}</span>
+                    </li>
+                    <li>
+                        <span>Status: </span>
+                        <span>{{ task.status }}</span>
+                    </li>
+                    <li>
+                        <span>Multithread: </span>
+                        <span>{{ task.multithread }}</span>
+                    </li>
+                </ul>
+        </div>
+    </div>
+</body>
+</html>
