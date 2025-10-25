@@ -1,5 +1,0 @@
-ClusterPort: 6531
-MasterHost: localhost
-ReportTickRate: 10
-TaskQueueTickRate: 5
-UIPort: 5000
