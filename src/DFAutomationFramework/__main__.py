@@ -1,6 +1,7 @@
 import argparse
 import importlib
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Test Description"
@@ -9,7 +10,7 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--Master", action="store_true", help="Startet Master")
     group.add_argument("--Worker", action="store_true", help="Startet einen Worker")
-    
+
     parser.add_argument(
         "--Tasks",
         type=str,
@@ -30,5 +31,6 @@ def main():
         worker_module = importlib.import_module("DFAutomationFramework.Worker")
         worker_module.main(tasks=args.Tasks)
 
-if __name__ =="__main__":
+
+if __name__ == "__main__":
     main()

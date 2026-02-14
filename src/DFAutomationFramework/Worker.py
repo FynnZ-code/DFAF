@@ -23,13 +23,18 @@ class Worker:
         self.managable_tasks = managable_tasks.split(',')
         self.db_connection = DBWrapper.create_DBWrapper()
         self.status = 'idle'
-        self.log = f'Worker created with params; host: {self.host}, master_host: {self.master_host}, master_port: {self.master_port}, status: {self.status}'
+        self.log = f'''Worker created with params;
+            host: {self.host},
+            master_host: {self.master_host},
+            master_port: {self.master_port},
+            status: {self.status}
+        '''
         self.current_task = {'tasks': []}
         self.lock = threading.Lock()
         self.orphan = False
         self.client = None
         return
-    
+
     def connect_to_master(self):
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if self.client is not None:
@@ -38,7 +43,7 @@ class Worker:
         client.connect((self.master_host, self.master_port))
         self.client = client
         return
-    
+
     def start(self):
         self.connect_to_master()
         master_con = threading.Thread(target=self.report_to_master, args=())
@@ -48,7 +53,6 @@ class Worker:
         master_con.join()
         task_listener.join()
         print("shutting down . . . ")
-            
 
     def report_to_master(self):
         global REPORTTICKRATE
@@ -91,7 +95,6 @@ class Worker:
                 print("Connection has been aborted by the Master. Shutting down Reporting Loop.")
                 break
 
-
     def listen_for_task(self):
         while True:
             try:
@@ -104,7 +107,7 @@ class Worker:
                         execution_thread.start()
                         if not message['multithread']:
                             execution_thread.join()
-                            
+
                     else:
                         self.report_log(log_msg=f"Can not manage this type of task; task uid {message['uid']}")
                 else:
@@ -123,8 +126,8 @@ class Worker:
                             with self.lock:
                                 self.orphan = False
                             break
-                        except:
-                            print(f"failed. trying again in {REPORTTICKRATE}s. (Listening Loop)")
+                        except Exception as e:
+                            print(f"failed Error: {e}. trying again in {REPORTTICKRATE}s. (Listening Loop)")
                             time.sleep(REPORTTICKRATE)
                 else:
                     print("Shutting down Listening Loop.")
@@ -146,9 +149,9 @@ class Worker:
             process.execute()
             if process.successful:
                 self.status = 'finished'
-            else: 
+            else:
                 self.status = 'failed'
-            self.report_log(log_msg=f"Finished Task uid {task['uid']}")        
+            self.report_log(log_msg=f"Finished Task uid {task['uid']}")
         except ReadTimeout as e:
             self.status = 'failed'
             self.report_log(log_msg=f' Task {task['uid']} failed. Connection read timeout during API request: {str(e)}')
@@ -168,8 +171,7 @@ class Worker:
         if not self.current_task['tasks']:
             self.status = 'idle'
         self.report_log(log_msg=f"Finished Task uid {task['uid']}. Becoming idle . . .")
-        return 
-    
+        return
 
     def report_log(self, log_msg=None):
         if log_msg is not None:
@@ -191,7 +193,7 @@ class Worker:
         return
 
 
-############################# Entrypoint #############################
+# - - - - Entrypoint - - - - #
 def main(tasks):
     global REPORTTICKRATE
 
@@ -202,9 +204,8 @@ def main(tasks):
     with open(specs_file_path, 'r', encoding='utf-8') as specs_file:
         specs = yaml.safe_load(specs_file)
         REPORTTICKRATE = specs['ReportTickRate']
-        TASKQUEUETICKRATE = specs['TaskQueueTickRate']  
-        MASTERHOST = specs['MasterHost']  
-        CLUSTERPORT = specs['ClusterPort']  
-    
+        MASTERHOST = specs['MasterHost']
+        CLUSTERPORT = specs['ClusterPort']
+
     worker = Worker(master_host=MASTERHOST, master_port=CLUSTERPORT, managable_tasks=tasks)
     worker.start()
